@@ -1,6 +1,11 @@
 bots:
+  - slug: sample-echo
+    repo: dimatolpygin/portfolio_bot_platform
+    default_ref: main
+    snapshot_path: .
+    notes: Echo bot.
   - slug: workbot
-    repo: your-org/workbot
+    repo: dimatolpygin/portfolio_bot_platform
     default_ref: main
     snapshot_path: .
     notes: Part-time work finder bot for workers with admin panel at /admin/.
