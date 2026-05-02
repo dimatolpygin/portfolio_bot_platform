@@ -275,18 +275,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dot{width:8px;height:8px;border-radius:50%;background:#00a32a;animation:blink 1.6s infinite}
 .dot.err{background:#d63638;animation:none}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.content{padding:28px;max-width:1200px}
+.content{padding:28px;max-width:1100px}
 h2{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.9px;color:#787c82;margin:28px 0 12px}
 h2:first-child{margin-top:0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .card{background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:16px 18px;box-shadow:0 1px 1px rgba(0,0,0,.04)}
 .card .lbl{font-size:11px;color:#787c82;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
-.card .val{font-size:26px;font-weight:700;color:#1d2327;line-height:1}
+.card .val{font-size:28px;font-weight:700;color:#1d2327;line-height:1}
 .card .unit{font-size:11px;color:#787c82;margin-top:5px}
 .bar-wrap{margin-top:10px;background:#f0f0f1;border-radius:2px;height:4px}
 .bar{height:4px;border-radius:2px;background:#2271b1;transition:width .6s,background .4s}
-.bar.warn{background:#dba617}
-.bar.crit{background:#d63638}
+.bar.warn{background:#dba617}.bar.crit{background:#d63638}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.chart-card{background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:16px 18px;box-shadow:0 1px 1px rgba(0,0,0,.04)}
+.chart-card .lbl{font-size:11px;color:#787c82;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;justify-content:space-between}
+.chart-card canvas{display:block;width:100%;height:100px}
 .table-wrap{background:#fff;border:1px solid #c3c4c7;border-radius:4px;overflow:hidden;box-shadow:0 1px 1px rgba(0,0,0,.04)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#787c82;border-bottom:1px solid #c3c4c7;background:#f9f9f9}
@@ -297,6 +300,7 @@ tr:hover td{background:#f9f9f9}
 .badge-green{background:#edfaef;color:#00a32a;border:1px solid #b8e6be}
 .badge-gray{background:#f0f0f1;color:#50575e;border:1px solid #c3c4c7}
 code{background:#f0f0f1;padding:1px 5px;border-radius:2px;font-size:12px}
+@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}.charts{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -306,55 +310,40 @@ code{background:#f0f0f1;padding:1px 5px;border-radius:2px;font-size:12px}
 </div>
 <div class="content">
 
-<h2>Платформа</h2>
-<div class="grid">
+<h2>Обзор</h2>
+<div class="stats">
   <div class="card">
     <div class="lbl">Аптайм</div>
     <div class="val" id="uptime" style="font-size:20px">—</div>
   </div>
   <div class="card">
-    <div class="lbl">CPU процесса</div>
+    <div class="lbl">CPU бота</div>
     <div class="val" id="cpu">—</div>
-    <div class="unit">%</div>
+    <div class="unit">% от одного ядра</div>
     <div class="bar-wrap"><div class="bar" id="cpu-bar" style="width:0%"></div></div>
   </div>
   <div class="card">
-    <div class="lbl">Goroutines</div>
-    <div class="val" id="goroutines">—</div>
-  </div>
-  <div class="card">
-    <div class="lbl">GC циклов</div>
-    <div class="val" id="gc">—</div>
-  </div>
-</div>
-
-<h2>Память</h2>
-<div class="grid">
-  <div class="card">
-    <div class="lbl">Процесс RSS</div>
+    <div class="lbl">RAM бота</div>
     <div class="val" id="rss">—</div>
-    <div class="unit">MB — реальное потребление</div>
-  </div>
-  <div class="card">
-    <div class="lbl">Go Heap Alloc</div>
-    <div class="val" id="heap-alloc">—</div>
-    <div class="unit">MB</div>
-  </div>
-  <div class="card">
-    <div class="lbl">Go Heap In-Use</div>
-    <div class="val" id="heap-inuse">—</div>
-    <div class="unit">MB</div>
-  </div>
-  <div class="card">
-    <div class="lbl">Go Sys (резерв)</div>
-    <div class="val" id="sys-mb">—</div>
-    <div class="unit">MB запрошено у ОС</div>
+    <div class="unit">МБ — реальное потребление</div>
   </div>
   <div class="card">
     <div class="lbl">RAM сервера</div>
     <div class="val" id="sys-used">—</div>
-    <div class="unit" id="sys-total-lbl">MB / — MB всего</div>
+    <div class="unit" id="sys-total-lbl">МБ / — МБ всего</div>
     <div class="bar-wrap"><div class="bar" id="sys-bar" style="width:0%"></div></div>
+  </div>
+</div>
+
+<h2>График за последние 2 минуты</h2>
+<div class="charts">
+  <div class="chart-card">
+    <div class="lbl"><span>CPU бота</span><span id="cpu-cur">—</span></div>
+    <canvas id="cpu-chart" height="100"></canvas>
+  </div>
+  <div class="chart-card">
+    <div class="lbl"><span>RAM сервера</span><span id="ram-cur">—</span></div>
+    <canvas id="ram-chart" height="100"></canvas>
   </div>
 </div>
 
@@ -372,6 +361,9 @@ code{background:#f0f0f1;padding:1px 5px;border-radius:2px;font-size:12px}
 
 </div>
 <script>
+const HISTORY=60;
+const cpuH=[],ramH=[];
+
 function fmt(n,dec){return Number(n).toFixed(dec===undefined?1:dec)}
 function uptime(s){
   const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),sec=s%60;
@@ -389,20 +381,76 @@ function bar(id,pct){
 }
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
+function drawChart(canvasId,data,maxVal,color,unit){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.offsetWidth,H=100;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  const top=8,bot=H-4,left=0,right=W;
+  const rangeH=bot-top;
+  const mx=maxVal>0?maxVal:1;
+
+  // grid
+  ctx.strokeStyle='#f0f0f1';ctx.lineWidth=1;
+  [0.25,0.5,0.75,1].forEach(f=>{
+    const y=bot-rangeH*f;
+    ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();
+  });
+
+  if(data.length<2)return;
+  const step=(right-left)/(HISTORY-1);
+
+  // fill
+  const grad=ctx.createLinearGradient(0,top,0,bot);
+  grad.addColorStop(0,color+'33');grad.addColorStop(1,color+'00');
+  ctx.fillStyle=grad;
+  ctx.beginPath();
+  data.forEach((v,i)=>{
+    const x=left+(HISTORY-data.length+i)*step;
+    const y=bot-rangeH*(Math.min(v,mx)/mx);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.lineTo(left+(HISTORY-1)*step,bot);
+  ctx.lineTo(left+(HISTORY-data.length)*step,bot);
+  ctx.closePath();ctx.fill();
+
+  // line
+  ctx.strokeStyle=color;ctx.lineWidth=2;ctx.lineJoin='round';
+  ctx.beginPath();
+  data.forEach((v,i)=>{
+    const x=left+(HISTORY-data.length+i)*step;
+    const y=bot-rangeH*(Math.min(v,mx)/mx);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+}
+
+function push(arr,val){arr.push(val);if(arr.length>HISTORY)arr.shift()}
+
 const src=new EventSource('/stream');
 src.onmessage=function(e){
   const d=JSON.parse(e.data);
   set('uptime',uptime(d.uptime_seconds));
-  set('cpu',fmt(d.cpu_percent));bar('cpu-bar',d.cpu_percent);
-  set('goroutines',d.goroutines);
-  set('gc',d.num_gc);
-  set('rss',fmt(d.process_rss_mb));
-  set('heap-alloc',fmt(d.heap_alloc_mb));
-  set('heap-inuse',fmt(d.heap_in_use_mb));
-  set('sys-mb',fmt(d.sys_mb));
+
+  set('cpu',fmt(d.cpu_percent));
+  bar('cpu-bar',d.cpu_percent);
+  set('rss',fmt(d.process_rss_mb,0));
   set('sys-used',fmt(d.sys_mem_used_mb,0));
-  set('sys-total-lbl','MB / '+fmt(d.sys_mem_total_mb,0)+' MB всего');
+  set('sys-total-lbl','МБ / '+fmt(d.sys_mem_total_mb,0)+' МБ всего');
   if(d.sys_mem_total_mb>0)bar('sys-bar',d.sys_mem_used_mb/d.sys_mem_total_mb*100);
+
+  push(cpuH,d.cpu_percent);
+  push(ramH,d.sys_mem_used_mb);
+
+  set('cpu-cur',fmt(d.cpu_percent)+'%');
+  set('ram-cur',fmt(d.sys_mem_used_mb,0)+' / '+fmt(d.sys_mem_total_mb,0)+' МБ');
+
+  drawChart('cpu-chart',cpuH,100,'#2271b1','%');
+  drawChart('ram-chart',ramH,d.sys_mem_total_mb,'#00a32a','МБ');
+
   const tb=document.getElementById('bots-tbody');
   if(tb&&d.bots){
     tb.innerHTML=d.bots.length?d.bots.map(b=>
@@ -415,6 +463,10 @@ src.onmessage=function(e){
   }
 };
 src.onerror=function(){document.getElementById('dot').className='dot err'};
+window.addEventListener('resize',()=>{
+  drawChart('cpu-chart',cpuH,100,'#2271b1','%');
+  if(ramH.length){const last=ramH[ramH.length-1];drawChart('ram-chart',ramH,last*1.5,'#00a32a','МБ')}
+});
 </script>
 </body>
 </html>`
