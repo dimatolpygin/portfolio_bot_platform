@@ -7,31 +7,26 @@ DOMAIN="anastasia-kwork.ru"
 EMAIL="barkinhoevh3@gmail.com"
 KEY_PATH="/root/.ssh/github_deploy"
 
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
-NC='\033[0m'
+info()    { echo "[INFO]  $*"; }
+success() { echo "[OK]    $*"; }
+warning() { echo "[WARN]  $*"; }
 
-log() { echo -e "${CYAN}→${NC} $*"; }
-ok()  { echo -e "${GREEN}✓${NC} $*"; }
-warn(){ echo -e "${YELLOW}⚠${NC} $*"; }
-
-echo -e "${GREEN}========================================${NC}"
-echo -e "${GREEN}  Bots Platform — VPS Setup (Ubuntu 24.04)${NC}"
-echo -e "${GREEN}========================================${NC}"
+echo "========================================"
+echo "  Bots Platform - VPS Setup (Ubuntu 24.04)"
+echo "========================================"
 echo ""
 
-# ── 1. System update ────────────────────────────────────────────────────────
-log "Обновляю систему..."
+# 1. System update
+info "Обновляю систему..."
 apt-get update -qq
 DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq
 apt-get install -y -qq curl gnupg ca-certificates lsb-release git
-ok "Система обновлена"
+success "Система обновлена"
 
-# ── 2. Docker Engine ────────────────────────────────────────────────────────
-log "Устанавливаю Docker Engine..."
+# 2. Docker Engine
+info "Устанавливаю Docker Engine..."
 if command -v docker &>/dev/null; then
-    warn "Docker уже установлен: $(docker --version)"
+    warning "Docker уже установлен: $(docker --version)"
 else
     install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
@@ -47,50 +42,50 @@ else
         docker-ce docker-ce-cli containerd.io \
         docker-buildx-plugin docker-compose-plugin
     systemctl enable --now docker
-    ok "Docker $(docker --version | grep -oP '[\d.]+'  | head -1) установлен"
+    success "Docker установлен"
 fi
 
-# ── 3. Nginx + Certbot ──────────────────────────────────────────────────────
-log "Устанавливаю nginx и certbot..."
+# 3. Nginx + Certbot
+info "Устанавливаю nginx и certbot..."
 apt-get install -y -qq nginx certbot python3-certbot-nginx
 systemctl enable --now nginx
-ok "Nginx $(nginx -v 2>&1 | grep -oP '[\d.]+') установлен"
+success "Nginx установлен"
 
-# ── 4. SSH-ключ для GitHub Actions ─────────────────────────────────────────
-log "Генерирую SSH-ключ для GitHub Actions..."
+# 4. SSH-ключ для GitHub Actions
+info "Генерирую SSH-ключ для GitHub Actions..."
 mkdir -p /root/.ssh
 chmod 700 /root/.ssh
 if [ ! -f "${KEY_PATH}" ]; then
     ssh-keygen -t ed25519 -f "${KEY_PATH}" -N "" -C "github-actions-deploy"
-    ok "Ключ создан: ${KEY_PATH}"
+    success "Ключ создан: ${KEY_PATH}"
 else
-    warn "Ключ уже существует: ${KEY_PATH}"
+    warning "Ключ уже существует: ${KEY_PATH}"
 fi
 if ! grep -qF "$(cat "${KEY_PATH}.pub")" /root/.ssh/authorized_keys 2>/dev/null; then
     cat "${KEY_PATH}.pub" >> /root/.ssh/authorized_keys
     chmod 600 /root/.ssh/authorized_keys
 fi
 
-# ── 5. Клонирование репозитория ─────────────────────────────────────────────
-log "Клонирую репозиторий в ${APP_DIR}..."
+# 5. Клонирование репозитория
+info "Клонирую репозиторий в ${APP_DIR}..."
 if [ -d "${APP_DIR}/.git" ]; then
-    warn "Репозиторий уже существует — делаю git pull..."
+    warning "Репозиторий уже существует - делаю git pull..."
     git -C "${APP_DIR}" pull --ff-only
 else
     git clone "${REPO_URL}" "${APP_DIR}"
-    ok "Репозиторий склонирован"
+    success "Репозиторий склонирован"
 fi
 
-# ── 6. Создание .env ────────────────────────────────────────────────────────
+# 6. Создание .env
 if [ ! -f "${APP_DIR}/.env" ]; then
     cp "${APP_DIR}/.env.example" "${APP_DIR}/.env"
-    ok "Создан ${APP_DIR}/.env — заполни токены ботов!"
+    success "Создан ${APP_DIR}/.env"
 else
-    warn "${APP_DIR}/.env уже существует — пропускаю"
+    warning "${APP_DIR}/.env уже существует - пропускаю"
 fi
 
-# ── 7. Nginx конфиг ─────────────────────────────────────────────────────────
-log "Настраиваю nginx для ${DOMAIN}..."
+# 7. Nginx конфиг
+info "Настраиваю nginx для ${DOMAIN}..."
 cp "${APP_DIR}/nginx/anastasia-kwork.ru.conf" \
    "/etc/nginx/sites-available/${DOMAIN}"
 ln -sf \
@@ -99,35 +94,35 @@ ln -sf \
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl reload nginx
-ok "Nginx настроен"
+success "Nginx настроен"
 
-# ── 8. SSL-сертификат ───────────────────────────────────────────────────────
-log "Получаю SSL-сертификат Let's Encrypt для ${DOMAIN}..."
+# 8. SSL-сертификат
+info "Получаю SSL-сертификат Let's Encrypt для ${DOMAIN}..."
 if [ -d "/etc/letsencrypt/live/${DOMAIN}" ]; then
-    warn "Сертификат уже существует — пропускаю"
+    warning "Сертификат уже существует - пропускаю"
 else
     certbot --nginx \
         -d "${DOMAIN}" -d "www.${DOMAIN}" \
         --non-interactive --agree-tos \
         -m "${EMAIL}" \
         --redirect
-    ok "SSL-сертификат получен"
+    success "SSL-сертификат получен"
 fi
 systemctl enable certbot.timer
 systemctl start certbot.timer
 
-# ── 9. Сделать скрипты исполняемыми ─────────────────────────────────────────
+# 9. Сделать скрипты исполняемыми
 chmod +x "${APP_DIR}/scripts/"*.sh
 
-# ── 10. Вывод инструкций ────────────────────────────────────────────────────
+# 10. Вывод инструкций
 VPS_IP=$(curl -s --max-time 5 ifconfig.me 2>/dev/null || hostname -I | awk '{print $1}')
 
 echo ""
-echo -e "${GREEN}════════════════════════════════════════════════════════════${NC}"
-echo -e "${GREEN}  УСТАНОВКА ЗАВЕРШЕНА!${NC}"
-echo -e "${GREEN}════════════════════════════════════════════════════════════${NC}"
+echo "========================================"
+echo "  УСТАНОВКА ЗАВЕРШЕНА!"
+echo "========================================"
 echo ""
-echo -e "${YELLOW}ШАГ 1: Добавь в GitHub → Settings → Secrets and variables → Actions${NC}"
+echo "ШАГ 1: Добавь в GitHub -> Settings -> Secrets and variables -> Actions"
 echo ""
 printf "  %-16s = %s\n" "VPS_HOST"      "${VPS_IP}"
 printf "  %-16s = %s\n" "VPS_USER"      "root"
@@ -135,17 +130,17 @@ printf "  %-16s = %s\n" "VPS_APP_DIR"   "${APP_DIR}"
 printf "  %-16s = %s\n" "GHCR_USERNAME" "dimatolpygin"
 printf "  %-16s = %s\n" "GHCR_PAT"      "<GitHub PAT: packages:write + repo>"
 echo ""
-echo "  VPS_SSH_KEY = (приватный ключ ниже):"
-echo "  ─────────────────────────────────────"
+echo "  VPS_SSH_KEY = (скопируй весь приватный ключ ниже):"
+echo "  --------------------------------------------------"
 cat "${KEY_PATH}"
-echo "  ─────────────────────────────────────"
+echo "  --------------------------------------------------"
 echo ""
-echo -e "${YELLOW}ШАГ 2: Заполни токены ботов в ${APP_DIR}/.env${NC}"
+echo "ШАГ 2: Заполни токены ботов"
 echo "  nano ${APP_DIR}/.env"
 echo ""
-echo -e "${YELLOW}ШАГ 3: Запусти платформу${NC}"
+echo "ШАГ 3: Запусти платформу"
 echo "  cd ${APP_DIR} && docker compose pull && docker compose up -d"
 echo ""
-echo -e "${YELLOW}ШАГ 4: Проверь${NC}"
+echo "ШАГ 4: Проверь"
 echo "  curl https://${DOMAIN}/healthz"
 echo ""
