@@ -1,9 +1,4 @@
 bots:
-  - slug: sample-echo
-    repo: your-org/sample-echo-bot
-    default_ref: main
-    snapshot_path: .
-    notes: Demo echo bot used as the default MVP snapshot.
   - slug: workbot
     repo: your-org/workbot
     default_ref: main
