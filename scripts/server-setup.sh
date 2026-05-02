@@ -12,9 +12,9 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
-log()  { echo -e "${CYAN}→${NC} $*"; }
-done() { echo -e "${GREEN}✓${NC} $*"; }
-warn() { echo -e "${YELLOW}⚠${NC} $*"; }
+log() { echo -e "${CYAN}→${NC} $*"; }
+ok()  { echo -e "${GREEN}✓${NC} $*"; }
+warn(){ echo -e "${YELLOW}⚠${NC} $*"; }
 
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}  Bots Platform — VPS Setup (Ubuntu 24.04)${NC}"
@@ -26,7 +26,7 @@ log "Обновляю систему..."
 apt-get update -qq
 DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq
 apt-get install -y -qq curl gnupg ca-certificates lsb-release git
-done "Система обновлена"
+ok "Система обновлена"
 
 # ── 2. Docker Engine ────────────────────────────────────────────────────────
 log "Устанавливаю Docker Engine..."
@@ -47,14 +47,14 @@ else
         docker-ce docker-ce-cli containerd.io \
         docker-buildx-plugin docker-compose-plugin
     systemctl enable --now docker
-    done "Docker $(docker --version | grep -oP '[\d.]+'  | head -1) установлен"
+    ok "Docker $(docker --version | grep -oP '[\d.]+'  | head -1) установлен"
 fi
 
 # ── 3. Nginx + Certbot ──────────────────────────────────────────────────────
 log "Устанавливаю nginx и certbot..."
 apt-get install -y -qq nginx certbot python3-certbot-nginx
 systemctl enable --now nginx
-done "Nginx $(nginx -v 2>&1 | grep -oP '[\d.]+') установлен"
+ok "Nginx $(nginx -v 2>&1 | grep -oP '[\d.]+') установлен"
 
 # ── 4. SSH-ключ для GitHub Actions ─────────────────────────────────────────
 log "Генерирую SSH-ключ для GitHub Actions..."
@@ -62,7 +62,7 @@ mkdir -p /root/.ssh
 chmod 700 /root/.ssh
 if [ ! -f "${KEY_PATH}" ]; then
     ssh-keygen -t ed25519 -f "${KEY_PATH}" -N "" -C "github-actions-deploy"
-    done "Ключ создан: ${KEY_PATH}"
+    ok "Ключ создан: ${KEY_PATH}"
 else
     warn "Ключ уже существует: ${KEY_PATH}"
 fi
@@ -78,13 +78,13 @@ if [ -d "${APP_DIR}/.git" ]; then
     git -C "${APP_DIR}" pull --ff-only
 else
     git clone "${REPO_URL}" "${APP_DIR}"
-    done "Репозиторий склонирован"
+    ok "Репозиторий склонирован"
 fi
 
 # ── 6. Создание .env ────────────────────────────────────────────────────────
 if [ ! -f "${APP_DIR}/.env" ]; then
     cp "${APP_DIR}/.env.example" "${APP_DIR}/.env"
-    done "Создан ${APP_DIR}/.env — заполни токены ботов!"
+    ok "Создан ${APP_DIR}/.env — заполни токены ботов!"
 else
     warn "${APP_DIR}/.env уже существует — пропускаю"
 fi
@@ -99,7 +99,7 @@ ln -sf \
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl reload nginx
-done "Nginx настроен"
+ok "Nginx настроен"
 
 # ── 8. SSL-сертификат ───────────────────────────────────────────────────────
 log "Получаю SSL-сертификат Let's Encrypt для ${DOMAIN}..."
@@ -111,7 +111,7 @@ else
         --non-interactive --agree-tos \
         -m "${EMAIL}" \
         --redirect
-    done "SSL-сертификат получен"
+    ok "SSL-сертификат получен"
 fi
 systemctl enable certbot.timer
 systemctl start certbot.timer
