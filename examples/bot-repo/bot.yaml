@@ -1,0 +1,29 @@
+slug: sample-echo
+name: Sample Echo Bot
+description: Declarative bot repo that binds to the shared echo module.
+enabled: true
+module: echo
+welcome_message: |
+  Hello from the standalone bot repo.
+  This repository does not run a service by itself; it feeds the shared platform.
+telegram:
+  token_env: BOT_SAMPLE_ECHO_TOKEN
+  webhook_secret_env: BOT_SAMPLE_ECHO_WEBHOOK_SECRET
+features:
+  echo: true
+jobs:
+  - name: nightly-cleanup
+    enabled: false
+integrations:
+  supabase:
+    enabled: false
+env_schema:
+  - name: BOT_SAMPLE_ECHO_TOKEN
+    required: true
+    secret: true
+    description: Telegram token resolved by the shared platform runtime.
+  - name: BOT_SAMPLE_ECHO_WEBHOOK_SECRET
+    required: true
+    secret: true
+    description: Secret token passed to Telegram webhook verification.
+

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "bots": [
+    {
+      "slug": "sample-echo",
+      "repo": "your-org/sample-echo-bot",
+      "ref": "main",
+      "sha": "1111111111111111111111111111111111111111",
+      "snapshot_path": ".",
+      "synced_at": "2026-04-30T00:00:00Z"
+    },
+    {
+      "slug": "workbot",
+      "repo": "your-org/workbot",
+      "ref": "main",
+      "sha": "2222222222222222222222222222222222222222",
+      "snapshot_path": ".",
+      "synced_at": "2026-04-30T00:00:00Z"
+    }
+  ]
+}

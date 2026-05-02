@@ -1,0 +1,59 @@
+{{define "workers.html"}}
+{{template "head" .}}
+<div class="topbar"><h1>Рабочие</h1></div>
+<div class="content">
+  <div class="page-header">
+    <h2>Зарегистрированные рабочие ({{len .Workers}})</h2>
+    <form method="GET" action="/admin/workers" style="display:flex;gap:8px">
+      <input type="text" name="phone" value="{{.PhoneQuery}}" placeholder="Поиск по телефону" style="background:#fff;border:1px solid #8c8f94;border-radius:3px;padding:7px 12px;font-size:13px;color:#1d2327;outline:none;width:220px">
+      <button type="submit" class="btn btn-secondary btn-sm">Найти</button>
+      {{if .PhoneQuery}}<a href="/admin/workers" class="btn btn-secondary btn-sm">✕</a>{{end}}
+    </form>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID / Username</th>
+            <th>Имя</th>
+            <th>Город</th>
+            <th>Телефон</th>
+            <th>Гражданство</th>
+            <th>Дата рождения</th>
+            <th>Дата регистрации</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range .Workers}}
+          <tr>
+            <td style="font-size:12px">
+              <span style="color:#787c82">{{.TelegramID}}</span>
+              {{if .Username}}<br><span style="color:#2271b1">@{{.Username}}</span>{{end}}
+            </td>
+            <td><b>{{.FullName}}</b></td>
+            <td>{{.City}}</td>
+            <td>{{if .Phone}}<a href="tel:{{.Phone}}">{{.Phone}}</a>{{else}}—{{end}}</td>
+            <td>{{.Citizenship}}</td>
+            <td>{{.DOB}}</td>
+            <td style="color:#787c82;font-size:12px">{{if not (.RegisteredAt.IsZero)}}{{.RegisteredAt.Format "02.01.2006 15:04"}}{{end}}</td>
+            <td style="display:flex;gap:6px">
+              <a href="/admin/workers/{{.TelegramID}}/chat" class="btn btn-secondary btn-sm">Написать</a>
+              {{if and $.Session (eq $.Session.Role "super_admin")}}
+              <form method="POST" action="/admin/workers/{{.TelegramID}}/delete" onsubmit="return confirm('Удалить рабочего? Он сможет зарегистрироваться заново.')">
+                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+              </form>
+              {{end}}
+            </td>
+          </tr>
+          {{else}}
+          <tr><td colspan="8" style="text-align:center;color:#787c82;padding:32px">Нет рабочих</td></tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{{template "foot" .}}
+{{end}}

@@ -1,0 +1,7 @@
+bots:
+  - slug: sample-echo
+    repo: your-org/sample-echo-bot
+    default_ref: main
+    snapshot_path: .
+    notes: Copy this file to config/bots.yml and replace the repo metadata.
+

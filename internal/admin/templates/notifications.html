@@ -1,0 +1,45 @@
+{{define "notifications.html"}}
+{{template "head" .}}
+<div class="topbar">
+  <h1>Уведомления</h1>
+</div>
+<div class="content">
+  {{if not .Notifications}}
+  <div class="card" style="color:#787c82;font-size:14px">Нет уведомлений.</div>
+  {{else}}
+  <div class="card" style="padding:0">
+    <table>
+      <thead>
+        <tr>
+          <th>Тип</th>
+          <th>Рабочий</th>
+          <th>Вакансия</th>
+          <th>Время</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .Notifications}}
+        <tr>
+          <td>
+            {{if eq .Type "cancel_apply"}}<span class="badge badge-red">Отмена заявки</span>{{else}}{{.Type}}{{end}}
+          </td>
+          <td>
+            <b>{{.FullName}}</b>{{if .Username}}<br><span style="color:#787c82;font-size:11px">@{{.Username}}</span>{{end}}
+            <br><span style="color:#787c82;font-size:11px">ID: {{.UserID}}</span>
+          </td>
+          <td>
+            <a href="/admin/vacancies/{{.VacancyID}}"><code>{{.VacancyID}}</code></a>
+            <br><span style="font-size:12px">📍 {{.City}}, {{.Address}}</span>
+            <br><span style="font-size:12px;color:#787c82">🕐 {{.StartTime}}</span>
+            {{if .Description}}<br><span style="font-size:12px;color:#787c82">💼 {{.Description}}</span>{{end}}
+          </td>
+          <td style="color:#787c82;white-space:nowrap">{{.CreatedAt.Format "02.01 15:04"}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+  {{end}}
+</div>
+{{template "foot" .}}
+{{end}}

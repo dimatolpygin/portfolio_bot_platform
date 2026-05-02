@@ -1,0 +1,36 @@
+{{define "dashboard.html"}}
+{{template "head" .}}
+<div class="topbar"><h1>Дашборд</h1></div>
+<div class="content">
+  {{if .Flash}}<div class="flash flash-success">{{.Flash}}</div>{{end}}
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="label">Рабочих зарегистрировано</div>
+      <div class="value">{{.WorkerCount}}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Активных вакансий</div>
+      <div class="value">{{.ActiveVacancies}}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Заявок сегодня</div>
+      <div class="value">{{.TodayApplications}}</div>
+    </div>
+  </div>
+  <div class="page-header">
+    <h2>Быстрые действия</h2>
+  </div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap">
+    <a href="/admin/vacancies/new" class="btn btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+      Создать вакансию
+    </a>
+    <a href="/admin/workers" class="btn btn-secondary">Все рабочие</a>
+    <a href="/admin/vacancies" class="btn btn-secondary">Все вакансии</a>
+    {{if and .Session (eq .Session.Role "super_admin")}}
+    <a href="/admin/foremans" class="btn btn-secondary">Операторы</a>
+    {{end}}
+  </div>
+</div>
+{{template "foot" .}}
+{{end}}

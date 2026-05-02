@@ -1,0 +1,15 @@
+[build]
+  cmd         = "go build -o ./tmp/server.exe ./cmd/server"
+  bin         = "tmp/server.exe"
+  args_bin    = ["-mode=all"]
+  delay       = 500
+  exclude_dir = [".cache", ".git", "tmp", "registry/bots", "internal/admin/templates"]
+  include_dir = ["cmd", "internal", "config", "registry/schemas"]
+  include_ext = ["go", "yaml", "yml"]
+
+[log]
+  time = true
+
+[color]
+  build  = "yellow"
+  runner = "green"

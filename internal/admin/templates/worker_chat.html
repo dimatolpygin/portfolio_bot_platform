@@ -1,0 +1,40 @@
+{{define "worker_chat.html"}}
+{{template "head" .}}
+<meta http-equiv="refresh" content="15">
+<div class="topbar">
+  <h1>Чат{{if .Worker}} — {{.Worker.FullName}}{{end}}</h1>
+  <a href="/admin/workers" class="btn btn-secondary">← Назад</a>
+</div>
+<div class="content">
+  {{if .Flash}}<div class="flash flash-success">{{.Flash}}</div>{{end}}
+  <div class="card" style="max-width:700px">
+    {{if .Worker}}
+    <div style="font-size:13px;color:#787c82;margin-bottom:14px">
+      {{.Worker.FullName}}{{if .Worker.Username}} · <span style="color:#2271b1">@{{.Worker.Username}}</span>{{end}} · {{.Worker.Phone}} · {{.Worker.City}}
+    </div>
+    {{end}}
+    <div id="chat-feed" style="height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid #e2e4e7;border-radius:4px;margin-bottom:16px">
+      {{range .Messages}}
+      <div style="display:flex;{{if .FromAdmin}}justify-content:flex-end{{else}}justify-content:flex-start{{end}}">
+        <div style="max-width:72%;padding:10px 14px;border-radius:12px;{{if .FromAdmin}}background:#2271b1;color:#fff{{else}}background:#f0f0f1;color:#1d2327{{end}}">
+          {{if .FromAdmin}}<div style="font-size:11px;opacity:.8;margin-bottom:4px">{{.AdminName}}</div>{{end}}
+          <div style="white-space:pre-wrap;font-size:14px">{{.Text}}</div>
+          <div style="font-size:11px;opacity:.65;margin-top:6px;text-align:right">{{.SentAt.Format "02.01 15:04"}}</div>
+        </div>
+      </div>
+      {{else}}
+      <div style="text-align:center;color:#787c82;padding:40px">Сообщений нет</div>
+      {{end}}
+    </div>
+    <form method="POST" action="/admin/workers/{{.UserID}}/chat" style="display:flex;gap:8px;align-items:flex-end">
+      <textarea name="text" placeholder="Написать сообщение…" rows="2" style="flex:1;resize:vertical;background:#fff;border:1px solid #8c8f94;border-radius:3px;padding:8px 12px;font-size:13px;color:#1d2327;outline:none"></textarea>
+      <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+  </div>
+</div>
+<script>
+  const feed = document.getElementById('chat-feed');
+  if (feed) feed.scrollTop = feed.scrollHeight;
+</script>
+{{template "foot" .}}
+{{end}}

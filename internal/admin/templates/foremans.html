@@ -1,0 +1,49 @@
+{{define "foremans.html"}}
+{{template "head" .}}
+<div class="topbar"><h1>Операторы</h1></div>
+<div class="content">
+  {{if .Flash}}<div class="flash flash-success">{{.Flash}}</div>{{end}}
+  <div class="page-header">
+    <h2>Все операторы ({{len .Foremans}})</h2>
+    <a href="/admin/foremans/new" class="btn btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+      Добавить оператора
+    </a>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Логин</th>
+            <th>Город</th>
+            <th>Создан</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range .Foremans}}
+          <tr>
+            <td style="color:#475569;font-size:12px">{{.ID}}</td>
+            <td><b>{{.Name}}</b></td>
+            <td style="color:#64748b">{{.Login}}</td>
+            <td>{{.City}}</td>
+            <td style="color:#64748b;font-size:12px">{{.CreatedAt.Format "02.01.2006 15:04"}}</td>
+            <td>
+              <form method="POST" action="/admin/foremans/{{.ID}}/delete" style="display:inline" onsubmit="return confirm('Удалить оператора {{.Name}}?')">
+                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+              </form>
+            </td>
+          </tr>
+          {{else}}
+          <tr><td colspan="6" style="text-align:center;color:#475569;padding:32px">Нет операторов</td></tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{{template "foot" .}}
+{{end}}

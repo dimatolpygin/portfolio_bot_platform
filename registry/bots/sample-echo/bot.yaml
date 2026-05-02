@@ -1,0 +1,31 @@
+slug: sample-echo
+name: Sample Echo Bot
+description: Portfolio demo bot bound to the shared echo module.
+enabled: true
+module: echo
+welcome_message: |
+  Hello! This is the sample echo bot.
+  Send any text and the shared runtime will echo it back.
+telegram:
+  token_env: BOT_SAMPLE_ECHO_TOKEN
+  webhook_secret_env: BOT_SAMPLE_ECHO_WEBHOOK_SECRET
+features:
+  echo: true
+jobs:
+  - name: sample-cleanup
+    enabled: false
+integrations:
+  supabase:
+    enabled: false
+  redis:
+    enabled: false
+env_schema:
+  - name: BOT_SAMPLE_ECHO_TOKEN
+    required: true
+    secret: true
+    description: Telegram bot token for the sample echo bot.
+  - name: BOT_SAMPLE_ECHO_WEBHOOK_SECRET
+    required: true
+    secret: true
+    description: Webhook secret token used to verify Telegram requests.
+

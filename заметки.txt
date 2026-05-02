@@ -1,0 +1,29 @@
+curl.exe -X POST "https://api.telegram.org/bot$env:BOT_SAMPLE_ECHO_TOKEN/setWebhook" `
+  -d "url=https://discuss-discs-profiles-vegetables.trycloudflare.com/telegram/sample-echo/webhook" `
+  -d "secret_token=$env:BOT_SAMPLE_ECHO_WEBHOOK_SECRET"
+
+------------------------------
+curl.exe -X POST "https://api.telegram.org/bot$env:BOT_WORKBOT_TOKEN/setWebhook" `
+  -d "url=https://discuss-discs-profiles-vegetables.trycloudflare.com/telegram/workbot/webhook" `
+  -d "secret_token=$env:BOT_WORKBOT_WEBHOOK_SECRET"
+
+------------------------
+Get-Content .env | Where-Object { $_ -match '^\s*[^#]' } | ForEach-Object {
+  $parts = $_ -split '=', 2
+  [System.Environment]::SetEnvironmentVariable($parts[0].Trim(), $parts[1].Trim(), 'Process')
+}
+-----------------------------------
+.\set-webhooks.ps1 https://curve-advice-stock-citations.trycloudflare.com
+
+автовебхуки.
+
+путь скрипта: D:\claude\боты_портфолио\set-webhooks.ps1
+---------------------------------
+-----------------------------------
+БОТ
+
+$env:HTTP_ADDR=":9090"
+go run ./cmd/server -mode=all
+-----------------------------------
+Get-Content .env | ForEach-Object { if ($_ -match '^\s*([^#=][^=]*)=(.*)') {
+[Environment]::SetEnvironmentVariable($matches[1].Trim(), $matches[2].Trim(), 'Process') } }

@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go build *)",
+      "Bash(go test *)",
+      "Bash(GOPATH=\"$\\(pwd\\)/.cache/gopath\" GOCACHE=\"$\\(pwd\\)/.cache/gobuild\" go build ./...)",
+      "Bash(GOPATH=\"$\\(pwd\\)/.cache/gopath\" GOCACHE=\"$\\(pwd\\)/.cache/gobuild\" go test ./...)",
+      "Bash(where air *)",
+      "Bash(ls -la \"D:\\\\\\\\claude\\\\\\\\боты_портфолио\\\\\\\\\")",
+      "Bash(find \"D:\\\\\\\\claude\\\\\\\\боты_портфолио\" -name \"*.air.toml\" -o -name \".air.toml\")",
+      "Bash(find \"D:\\\\\\\\claude\\\\\\\\боты_портфолио\" -type d -name \".cache\" -prune -o -type d -name \".claude\" -prune -o -name \"*.go\" -type f -print)",
+      "Bash(ls *)",
+      "Bash(find \"D:\\\\\\\\claude\\\\\\\\боты_портфолио\" -type f -name \"*.go\")",
+      "Bash(find D:\\\\\\\\claude\\\\\\\\боты_портфолио *)",
+      "Bash(test -f \"D:\\\\\\\\claude\\\\\\\\боты_портфолио\\\\\\\\.env\")",
+      "Bash(go install *)",
+      "WebSearch",
+      "Bash(sc query *)",
+      "Bash(Get-Service -Name \"Redis*\")",
+      "Bash(Get-ChildItem -Path \"D:\\\\claude\\\\боты_портфолио\" -Recurse -File)",
+      "Bash(Select-Object -First 50)",
+      "Bash(Format-Table FullName)",
+      "Bash(go vet *)",
+      "Bash(Get-ChildItem -Path \"D:\\\\claude\\\\боты_портфолио\" -Recurse -Directory)",
+      "Bash(Select-Object -First 20 FullName)",
+      "Bash(xargs grep *)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(GOPATH=\"$\\(pwd\\)/.cache/gopath\" go build ./...)",
+      "Bash(Remove-Item *)",
+      "Bash(GOPATH=\"$\\(pwd\\)/.cache/gopath\" go vet ./...)",
+      "Bash(Get-ChildItem -Path \"D:\\\\claude\\\\боты_портфолио\" -Force)",
+      "Bash(Select-Object -Property Name)",
+      "Bash(Select-Object -First 20)",
+      "Bash(grep -E \"\\\\.\\(yaml|yml|json\\)$\")",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git rm *)"
+    ]
+  }
+}

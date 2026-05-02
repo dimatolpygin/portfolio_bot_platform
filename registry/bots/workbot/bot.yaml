@@ -1,0 +1,29 @@
+slug: workbot
+name: Workbot — Поиск подработки
+description: Бот для поиска рабочих на временные подработки. Регистрация, геолокация, уведомления о вакансиях.
+enabled: true
+module: workbot
+welcome_message: |
+  Привет! Я помогу найти тебе подработку.
+  Давай начнём — напиши своё полное имя (имя и фамилию).
+telegram:
+  token_env: BOT_WORKBOT_TOKEN
+  webhook_secret_env: BOT_WORKBOT_WEBHOOK_SECRET
+features:
+  registration: true
+  vacancies: true
+  geocoding: true
+jobs: []
+env_schema:
+  - name: BOT_WORKBOT_TOKEN
+    required: true
+    secret: true
+    description: Telegram bot token for workbot.
+  - name: BOT_WORKBOT_WEBHOOK_SECRET
+    required: true
+    secret: true
+    description: Webhook secret for workbot incoming requests.
+  - name: WORKBOT_ADMIN_TOKEN
+    required: true
+    secret: true
+    description: Static password for the admin web panel at /admin/.

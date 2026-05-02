@@ -1,0 +1,57 @@
+{{define "foreman_form.html"}}
+{{template "head" .}}
+<div class="topbar"><h1>Добавить оператора</h1></div>
+<div class="content">
+  {{if .Flash}}<div class="flash flash-error">{{.Flash}}</div>{{end}}
+  <div class="card" style="max-width:480px">
+    <form method="POST" action="/admin/foremans">
+      <div class="form-group">
+        <label>Имя <span style="color:#f87171">*</span></label>
+        <input type="text" name="name" placeholder="Иван Петров" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Логин <span style="color:#f87171">*</span></label>
+          <input type="text" name="login" placeholder="ivan" required autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Пароль <span style="color:#f87171">*</span></label>
+          <input type="password" name="password" placeholder="••••••••" required autocomplete="new-password">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Город</label>
+          <input type="text" name="city" placeholder="Москва">
+        </div>
+        <div class="form-group">
+          <label>Часовой пояс</label>
+          <select name="timezone">
+            <option value="Europe/Kaliningrad">UTC+2 Калининград</option>
+            <option value="Europe/Moscow" selected>UTC+3 Москва</option>
+            <option value="Europe/Samara">UTC+4 Самара</option>
+            <option value="Asia/Yekaterinburg">UTC+5 Екатеринбург</option>
+            <option value="Asia/Omsk">UTC+6 Омск</option>
+            <option value="Asia/Krasnoyarsk">UTC+7 Красноярск</option>
+            <option value="Asia/Irkutsk">UTC+8 Иркутск</option>
+            <option value="Asia/Chita">UTC+9 Чита / Якутск</option>
+            <option value="Asia/Vladivostok">UTC+10 Владивосток</option>
+            <option value="Asia/Magadan">UTC+11 Магадан</option>
+            <option value="Asia/Kamchatka">UTC+12 Камчатка</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Telegram Chat ID для уведомлений</label>
+        <input type="number" name="telegram_chat_id" placeholder="123456789">
+        <small style="color:#787c82;font-size:11px">Отправьте /start боту @userinfobot чтобы узнать свой ID</small>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <button type="submit" class="btn btn-primary">Создать оператора</button>
+        <a href="/admin/foremans" class="btn btn-secondary">Отмена</a>
+      </div>
+    </form>
+  </div>
+</div>
+{{template "foot" .}}
+{{end}}

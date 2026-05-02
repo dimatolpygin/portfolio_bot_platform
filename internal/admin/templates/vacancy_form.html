@@ -1,0 +1,91 @@
+{{define "vacancy_form.html"}}
+{{template "head" .}}
+<div class="topbar"><h1>Создать вакансию</h1></div>
+<div class="content">
+  {{if .Flash}}<div class="flash flash-error">{{.Flash}}</div>{{end}}
+  <div class="card" style="max-width:680px">
+    <form method="POST" action="/admin/vacancies">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Город <span style="color:#f87171">*</span></label>
+          {{if and .Session (eq .Session.Role "foreman")}}
+          <input type="text" value="{{.Session.City}}" disabled style="background:#f0f0f1;color:#787c82">
+          <input type="hidden" name="city" value="{{.Session.City}}">
+          {{else}}
+          <input type="text" name="city" placeholder="Чита" required>
+          {{end}}
+        </div>
+        <div class="form-group">
+          <label>Адрес <span style="color:#f87171">*</span></label>
+          <input type="text" name="address" placeholder="Ул. Крымская, Д.1" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ссылка на карты (необязательно)</label>
+        <input type="url" name="maps_url" placeholder="https://maps.yandex.ru/...">
+      </div>
+      <div class="form-group">
+        <label>Задание <span style="color:#f87171">*</span></label>
+        <textarea name="description" placeholder="Выгрузить на склад 124 мешков с вещами" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Что взять с собой</label>
+        <input type="text" name="what_to_bring" placeholder="Удобная одежда, перчатки">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Требование к гражданству</label>
+          <input type="text" name="citizenship_required" placeholder="РФ или пусто">
+        </div>
+        <div class="form-group" style="display:flex;align-items:center;gap:10px;padding-top:24px">
+          <input type="checkbox" name="passport_rf" id="passport_rf" value="1">
+          <label for="passport_rf" style="margin:0;cursor:pointer">Нужен паспорт РФ</label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Начало работы</label>
+          <input type="datetime-local" name="start_at">
+        </div>
+        <div class="form-group">
+          <label>Кол-во нужных людей <span style="color:#f87171">*</span></label>
+          <input type="number" name="slots_needed" min="1" value="1" required>
+        </div>
+      </div>
+      {{if and .Session (eq .Session.Role "super_admin")}}
+      <div class="form-group">
+        <label>Часовой пояс</label>
+        <select name="timezone">
+          <option value="Europe/Kaliningrad">UTC+2 Калининград</option>
+          <option value="Europe/Moscow" selected>UTC+3 Москва</option>
+          <option value="Europe/Samara">UTC+4 Самара</option>
+          <option value="Asia/Yekaterinburg">UTC+5 Екатеринбург</option>
+          <option value="Asia/Omsk">UTC+6 Омск</option>
+          <option value="Asia/Krasnoyarsk">UTC+7 Красноярск</option>
+          <option value="Asia/Irkutsk">UTC+8 Иркутск</option>
+          <option value="Asia/Chita">UTC+9 Чита / Якутск</option>
+          <option value="Asia/Vladivostok">UTC+10 Владивосток</option>
+          <option value="Asia/Magadan">UTC+11 Магадан</option>
+          <option value="Asia/Kamchatka">UTC+12 Камчатка</option>
+        </select>
+      </div>
+      {{end}}
+      <div class="form-row">
+        <div class="form-group">
+          <label>Ставка (₽/час) <span style="color:#f87171">*</span></label>
+          <input type="number" name="hourly_rate" min="1" placeholder="600" required>
+        </div>
+        <div class="form-group">
+          <label>Минимум часов <span style="color:#f87171">*</span></label>
+          <input type="number" name="min_hours" min="1" value="2" required>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <button type="submit" class="btn btn-primary">Создать вакансию</button>
+        <a href="/admin/vacancies" class="btn btn-secondary">Отмена</a>
+      </div>
+    </form>
+  </div>
+</div>
+{{template "foot" .}}
+{{end}}

@@ -1,0 +1,53 @@
+{{define "vacancies.html"}}
+{{template "head" .}}
+<div class="topbar"><h1>Вакансии</h1></div>
+<div class="content">
+  {{if .Flash}}<div class="flash flash-success">{{.Flash}}</div>{{end}}
+  <div class="page-header">
+    <h2>{{if and .Session (eq .Session.Role "foreman")}}Мои вакансии{{else}}Все вакансии{{end}}</h2>
+    <a href="/admin/vacancies/new" class="btn btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+      Создать вакансию
+    </a>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Город</th>
+            <th>Адрес</th>
+            <th>Места</th>
+            <th>Ставка</th>
+            <th>Статус</th>
+            <th>Создана</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range .Vacancies}}
+          <tr>
+            <td style="color:#475569;font-size:12px">{{.ID}}</td>
+            <td><b>{{.City}}</b></td>
+            <td>{{.Address}}</td>
+            <td>{{.SlotsFilled}}/{{.SlotsNeeded}}</td>
+            <td>{{.HourlyRate}} ₽/ч</td>
+            <td>
+              {{if eq .Status "active"}}<span class="badge badge-green">Активна</span>
+              {{else if eq .Status "filled"}}<span class="badge badge-yellow">Заполнена</span>
+              {{else}}<span class="badge badge-gray">Закрыта</span>{{end}}
+            </td>
+            <td style="color:#64748b;font-size:12px">{{.CreatedAt.Format "02.01 15:04"}}</td>
+            <td><a href="/admin/vacancies/{{.ID}}" class="btn btn-secondary" style="padding:5px 12px;font-size:12px">Открыть</a></td>
+          </tr>
+          {{else}}
+          <tr><td colspan="8" style="text-align:center;color:#475569;padding:32px">Нет вакансий</td></tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{{template "foot" .}}
+{{end}}

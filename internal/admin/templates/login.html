@@ -1,0 +1,38 @@
+{{define "login.html"}}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workbot Admin — Вход</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f0f1;color:#1d2327;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:40px;width:100%;max-width:360px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.logo{font-size:22px;font-weight:700;color:#1d2327;margin-bottom:8px}
+.logo span{color:#2271b1}
+.subtitle{font-size:13px;color:#787c82;margin-bottom:28px}
+label{display:block;font-size:13px;color:#3c434a;font-weight:500;margin-bottom:6px}
+input{width:100%;background:#fff;border:1px solid #8c8f94;border-radius:3px;padding:10px 14px;color:#1d2327;font-size:14px;outline:none;margin-bottom:16px}
+input:focus{border-color:#2271b1;box-shadow:0 0 0 1px #2271b1}
+button{width:100%;background:#2271b1;color:#fff;border:1px solid #2271b1;border-radius:3px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px}
+button:hover{background:#135e96;border-color:#135e96}
+.flash{padding:10px 14px;border-radius:3px;background:#fcf0f1;color:#d63638;border-left:4px solid #d63638;font-size:13px;margin-bottom:16px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Work<span>bot</span></div>
+  <div class="subtitle">Панель управления</div>
+  {{if .Flash}}<div class="flash">{{.Flash}}</div>{{end}}
+  <form method="POST" action="/admin/login">
+    <label for="login">Логин</label>
+    <input type="text" id="login" name="login" placeholder="Введите логин" autofocus autocomplete="username">
+    <label for="password">Пароль</label>
+    <input type="password" id="password" name="password" placeholder="Введите пароль" autocomplete="current-password">
+    <button type="submit">Войти</button>
+  </form>
+</div>
+</body>
+</html>
+{{end}}

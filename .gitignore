@@ -1,0 +1,10 @@
+.env
+.dispatch-bot/
+bin/
+dist/
+tmp/
+.cache/
+__pycache__/
+*.pyc
+*.pyo
+
